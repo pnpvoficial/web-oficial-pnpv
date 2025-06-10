@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNPV: Puesto de Mando</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@300;400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS for advanced effects -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0a1a; /* Deep Indigo */
+            color: #e2e8f0; /* slate-200 */
+        }
+        .font-title { font-family: 'Oswald', sans-serif; }
+        .font-mono { font-family: 'Share Tech Mono', monospace; }
+
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        @keyframes text-flicker {
+            0%, 100% { opacity: 1; text-shadow: 0 0 2px currentColor; }
+            50% { opacity: 0.9; text-shadow: 0 0 5px currentColor; }
+        }
+        .flicker-text {
+            animation: text-flicker 3s linear infinite;
+        }
+        
+        @keyframes subtle-glow {
+            0%, 100% { text-shadow: 0 0 10px rgba(236, 72, 153, 0.5), 0 0 20px rgba(236, 72, 153, 0.2); } /* Magenta Glow */
+            50% { text-shadow: 0 0 15px rgba(236, 72, 153, 0.7), 0 0 30px rgba(236, 72, 153, 0.3); }
+        }
+        .glowing-text {
+            animation: subtle-glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-logo {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.5)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 16px rgba(34, 211, 238, 0.8)); transform: scale(1.02); }
+        }
+        .logo-pulse {
+            animation: pulse-logo 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+    <canvas id="three-canvas"></canvas>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center p-4 text-center">
+        
+        <div class="fade-in max-w-4xl w-full">
+
+            <!-- Logo -->
+            <div class="mb-4" style="animation-delay: 0.2s;">
+                <img src="icon.png" alt="Logo del PNPV" class="h-24 w-24 mx-auto logo-pulse" onerror="this.onerror=null;this.src='https://placehold.co/96x96/0c0a1a/22d3ee?text=PNPV';">
+            </div>
+            
+            <h1 class="font-title text-5xl sm:text-6xl md:text-7xl font-bold uppercase tracking-widest text-white glowing-text" style="animation-delay: 0.4s;">
+                Operación Manifiesto
+            </h1>
+            
+            <p class="max-w-2xl mx-auto mt-4 text-lg text-slate-300 font-light flicker-text text-cyan-400" style="animation-delay: 0.6s;">
+                INICIANDO CUENTA REGRESIVA PARA TRANSMISIÓN COMPLETA DE LA NUEVA WEB DEL PNPV
+            </p>
+            
+            <div id="countdown" class="flex justify-center gap-4 sm:gap-8 my-8 sm:my-10" style="animation-delay: 0.8s;">
+                <div class="text-center">
+                    <span id="days" class="font-mono block text-4xl sm:text-6xl font-bold text-cyan-400">00</span>
+                    <span class="font-mono text-xs uppercase tracking-widest text-slate-400">Días</span>
+                </div>
+                <div class="text-center">
+                    <span id="hours" class="font-mono block text-4xl sm:text-6xl font-bold text-cyan-400">00</span>
+                    <span class="font-mono text-xs uppercase tracking-wider text-slate-400">Horas</span>
+                </div>
+                <div class="text-center">
+                    <span id="minutes" class="font-mono block text-4xl sm:text-6xl font-bold text-cyan-400">00</span>
+                    <span class="font-mono text-xs uppercase tracking-wider text-slate-400">Minutos</span>
+                </div>
+                <div class="text-center">
+                    <span id="seconds" class="font-mono block text-4xl sm:text-6xl font-bold text-cyan-400">00</span>
+                    <span class="font-mono text-xs uppercase tracking-wider text-slate-400">Segundos</span>
+                </div>
+            </div>
+        </div>
+        
+        <audio id="background-music" loop>
+            <source src="slow.mp3" type="audio/mpeg">
+        </audio>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){const a=setInterval(function(){const t=new Date("June 30, 2025 23:59:59").getTime(),e=new Date().getTime(),n=t-e;if(n<0){clearInterval(a);document.getElementById("countdown").innerHTML="<h2 class='font-title text-2xl sm:text-3xl text-cyan-400 uppercase tracking-widest'>TRANSMISIÓN INICIADA</h2>";return}document.getElementById("days").innerText=String(Math.floor(n/864e5)).padStart(2,"0");document.getElementById("hours").innerText=String(Math.floor(n%864e5/36e5)).padStart(2,"0");document.getElementById("minutes").innerText=String(Math.floor(n%36e5/6e4)).padStart(2,"0");document.getElementById("seconds").innerText=String(Math.floor(n%6e4/1e3)).padStart(2,"0")},1e3);const o=document.getElementById("background-music");document.body.addEventListener("click",()=>{o.volume=.3;o.play().catch(a=>console.log("La reproducción automática fue bloqueada por el navegador."))},{once:!0});let e,t,n,c,r=0,i=0;const l=window.innerWidth/2,d=window.innerHeight/2;function s(){e=new THREE.Scene;t=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,.1,1e3);t.position.z=300;n=new THREE.WebGLRenderer({canvas:document.querySelector("#three-canvas"),alpha:!0});n.setPixelRatio(window.devicePixelRatio);n.setSize(window.innerWidth,window.innerHeight);const a=1e4,o=new Float32Array(3e4),i=new Float32Array(3e4),l=new THREE.Color(16501029),d=new THREE.Color(2282734);for(let e=0;e<o.length;e+=3){const t=800*Math.random()-400,n=800*Math.random()-400,s=800*Math.random()-400;o[e]=t;o[e+1]=n;o[e+2]=s;const m=Math.sqrt(t*t+n*n+s*s),u=new THREE.Color().lerpColors(l,d,m/400);i[e]=u.r;i[e+1]=u.g;i[e+2]=u.b}const s=new THREE.BufferGeometry;s.setAttribute("position",new THREE.BufferAttribute(o,3));s.setAttribute("color",new THREE.BufferAttribute(i,3));const m=new THREE.PointsMaterial({size:1.5,vertexColors:!0,blending:THREE.AdditiveBlending,transparent:!0,opacity:.8});c=new THREE.Points(s,m);e.add(c);document.addEventListener("mousemove",u);window.addEventListener("resize",m,!1);p()}function u(e){r=e.clientX-l;i=e.clientY-d}function p(){requestAnimationFrame(p);const a=.0001*Date.now();t.position.x+=(r-t.position.x)*.01;t.position.y+=(-i-t.position.y)*.01;t.lookAt(e.position);c.rotation.y=.5*a;c.rotation.x=.25*a;n.render(e,t)}function m(){t.aspect=window.innerWidth/window.innerHeight;t.updateProjectionMatrix();n.setSize(window.innerWidth,window.innerHeight)}s()});
+    </script>
+</body>
+</html>
